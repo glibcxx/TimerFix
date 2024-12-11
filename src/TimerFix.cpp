@@ -1,6 +1,5 @@
 #include "TimerFix.h"
 
-#include <memory>
 
 #include "ll/api/memory/Hook.h"
 #include "ll/api/mod/RegisterHelper.h"

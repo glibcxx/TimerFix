@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include "ll/api/mod/NativeMod.h"
 
 namespace timer_fix {
