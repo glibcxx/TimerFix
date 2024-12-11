@@ -2,14 +2,14 @@
 
 #include "ll/api/mod/NativeMod.h"
 
-namespace my_mod {
+namespace timer_fix {
 
-class MyMod {
+class TimerFix {
 
 public:
-    static MyMod& getInstance();
+    static TimerFix& getInstance();
 
-    MyMod(ll::mod::NativeMod& self) : mSelf(self) {}
+    TimerFix(ll::mod::NativeMod& self) : mSelf(self) {}
 
     [[nodiscard]] ll::mod::NativeMod& getSelf() const { return mSelf; }
 

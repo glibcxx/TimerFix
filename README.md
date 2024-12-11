@@ -1,35 +1,13 @@
-# LeviLamina Mod Template
+# TimerFix
 
-A LeviLamina mod template
+一个可以提高游戏内`Timer`计时器精度的插件
 
-This mod is a template for developing LeviLamina mods.
+## 什么计时器?
 
-## Install
+游戏内有一个名为`Timer`的类用于管理游戏更新速率，服务端线程每 5ms 更新一次计时器，计时器会计算出需要进行多少次游戏更新。
+在正常情况下，原速的游戏每经过 50ms，计时器就会计算出需要一次更新，从而达成游戏每秒 20 次的更新速率，也就是俗称的 20gt/s。
 
-Generate a new repository from this template.
+## 这个插件能干什么？
 
-## Usage
-
-Before using this mod template, make sure that you have installed XMake and a Minecraft Bedrock Server with LeviLamina.
-
-1. Clone the new repository into a local folder.
-
-1. Change the mod name and the expected LeviLamina version in `xmake.lua`.
-
-1. Add your code.
-
-1. Run `xmake repo -u` in the root of the repository.
-
-1. Run `xmake` to build the mod.
-
-Now the build is complete at `bin/`.
-
-## Contributing
-
-Ask questions by creating an issue.
-
-PRs accepted.
-
-## License
-
-CC0-1.0 © LiteLDev
+不幸的是，这个计时器存在精度问题，使得服务端连续运行不到2天就会出现细微卡顿，4天后就会出现游戏忽快忽慢的现象，8天后就会出现明显掉速。
+本插件旨在解决此问题，使用本插件后，理论上可观精度丢失会被推迟到100年之后
