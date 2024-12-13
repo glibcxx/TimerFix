@@ -36,10 +36,38 @@ float inlineClamp(float v, float low, float high) {
     else return v;
 }
 
+class FixedTimer : public Timer {
+public:
+    /*
+        `int64 getMillisecondsSinceLaunch()` is the default value of `getTimeMSCallback`, but not provided by ll's api.
+        So we have to resolve it by ourselves.
+    */
+    FixedTimer(
+        float                  ticksPerSecond,
+        std::function<int64()> getTimeMSCallback =
+            static_cast<int64 (*)()>(ll::memory::resolveIdentifier<int64*()>("?getMillisecondsSinceLaunch@@YA_JXZ"))
+    )
+    : Timer(ticksPerSecond, std::forward<std::function<int64()>>(getTimeMSCallback)) {}
+
+    // add a new field to store double precision time
+    double mLastTimeSeconds_fixed = this->mLastMs * 0.001;
+};
+
+LL_AUTO_STATIC_HOOK(
+    TimerCtorHook,
+    ll::memory::HookPriority::Highest,
+    "??$make_unique@VTimer@@AEBH$0A@@std@@YA?AV?$unique_ptr@VTimer@@U?$default_delete@VTimer@@@std@@@0@AEBH@Z",
+    std::unique_ptr<Timer>,
+    const int& ticksPerSecond
+) {
+    // Hook make_unique<Timer> and forward to make_unique<FixedTimer>, hope this will work and not crash the game
+    return std::make_unique<FixedTimer>(std::forward<const int>(ticksPerSecond));
+}
+
 LL_AUTO_TYPE_INSTANCE_HOOK(
     TimerUpdateHook,
-    ll::memory::HookPriority::Lowest,
-    Timer,
+    ll::memory::HookPriority::Highest,
+    FixedTimer,
     &Timer::advanceTime,
     void,
     float preferredFrameStep
@@ -70,9 +98,9 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
             this->mLastMs        = nowMs;
             this->mLastMsSysTime = nowMs;
         }
-        static double sLastTimeSeconds = this->mLastMs * 0.001;
-        double        passedSeconds = (nowMs * 0.001 - sLastTimeSeconds) * this->mAdjustTime; // the key modification
-        this->mLastTimeSeconds = sLastTimeSeconds = nowMs * 0.001;
+        double passedSeconds =
+            (nowMs * 0.001 - this->mLastTimeSeconds_fixed) * this->mAdjustTime; // the key modification
+        this->mLastTimeSeconds = this->mLastTimeSeconds_fixed = nowMs * 0.001;
         if (preferredFrameStep > 0.0f) {
             float newFrameStepAlignmentRemainder = inlineClamp(
                 this->mFrameStepAlignmentRemainder + preferredFrameStep - passedSeconds,
