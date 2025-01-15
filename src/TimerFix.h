@@ -1,6 +1,5 @@
 #pragma once
 
-#include <span>
 #include "ll/api/mod/NativeMod.h"
 
 namespace timer_fix {
@@ -10,7 +9,7 @@ class TimerFix {
 public:
     static TimerFix& getInstance();
 
-    TimerFix(ll::mod::NativeMod& self) : mSelf(self) {}
+    TimerFix() : mSelf(*ll::mod::NativeMod::current()) {}
 
     [[nodiscard]] ll::mod::NativeMod& getSelf() const { return mSelf; }
 
