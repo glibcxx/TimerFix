@@ -1,6 +1,6 @@
 {
     "format_version": 2,
-    "tooth": "TimerFix",
+    "tooth": "github.com/glibcxx/TimerFix",
     "version": "0.1.2",
     "info": {
         "name": "Timer Fix",
