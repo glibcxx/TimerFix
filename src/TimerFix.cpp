@@ -45,7 +45,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     Timer,
     &Timer::advanceTime,
     void,
-    float preferredFrameStep
+    [[maybe_unused]] float preferredFrameStep
 ) {
     if (/* this->stepping() */ this->mSteppingTick >= 0) {
         if (this->mSteppingTick) {
@@ -76,17 +76,21 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         double passedSeconds =
             (nowMs * 0.001 - lastTimeSeconds_fixed[this]) * this->mAdjustTime; // the key modification
         this->mLastTimeSeconds = lastTimeSeconds_fixed[this] = nowMs * 0.001;
-        if (preferredFrameStep > 0.0f) {
-            float newFrameStepAlignmentRemainder = inlineClamp(
-                this->mFrameStepAlignmentRemainder + preferredFrameStep - passedSeconds,
-                0.0f,
-                4.0f * preferredFrameStep
-            );
-            passedSeconds                      -= this->mFrameStepAlignmentRemainder - newFrameStepAlignmentRemainder;
-            this->mFrameStepAlignmentRemainder  = newFrameStepAlignmentRemainder;
-        }
+        // if (preferredFrameStep > 0.0f) { // removed in 1.21.60
+        //     float newFrameStepAlignmentRemainder = inlineClamp(
+        //         this->mFrameStepAlignmentRemainder + preferredFrameStep - passedSeconds,
+        //         0.0f,
+        //         4.0f * preferredFrameStep
+        //     );
+        //     passedSeconds                      -= this->mFrameStepAlignmentRemainder -
+        //     newFrameStepAlignmentRemainder; this->mFrameStepAlignmentRemainder  = newFrameStepAlignmentRemainder;
+        // }
         if (passedSeconds < 0.0) passedSeconds = 0.0;
-        if (passedSeconds > 0.1) passedSeconds = 0.1;
+        if (passedSeconds > 0.1) {
+            // Mojang有空加一个OverflowTickComponent，却没空修bug
+            this->mOverflowTime += (passedSeconds - 0.1f) * this->mTimeScale * this->mTicksPerSecond;
+            passedSeconds        = 0.1;
+        }
         this->mLastTimestep  = passedSeconds;
         this->mPassedTime   += passedSeconds * this->mTimeScale * this->mTicksPerSecond;
         this->mTicks         = this->mPassedTime;

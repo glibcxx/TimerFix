@@ -1,16 +1,16 @@
 {
     "format_version": 2,
     "tooth": "github.com/glibcxx/TimerFix",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "info": {
         "name": "Timer Fix",
         "description": "Increase The Timer Accuracy",
         "author": "glibcxx",
         "tags": ["levilamina", "mod"]
     },
-    "asset_url": "https://github.com/glibcxx/TimerFix/releases/download/v0.1.3/TimerFix-windows-x64.zip",
+    "asset_url": "https://github.com/glibcxx/TimerFix/releases/download/v0.1.4/TimerFix-windows-x64.zip",
     "prerequisites": {
-        "github.com/LiteLDev/LeviLamina": ">=1.0.0-rc.3"
+        "github.com/LiteLDev/LeviLamina": ">=1.1.0"
     },
     "files": {
         "place": [
